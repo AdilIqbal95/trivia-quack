@@ -1,25 +1,19 @@
-import icon1 from '../../images/player-1.png';
-import icon2 from '../../images/player-2.png';
-import icon3 from '../../images/player-3.png';
-import icon4 from '../../images/player-4.png';
-import icon5 from '../../images/player-5.png';
-import icon6 from '../../images/player-6.png';
-import icon7 from '../../images/player-7.png';
-import icon8 from '../../images/player-8.png';
-import icon9 from '../../images/player-9.png';
-import icon10 from '../../images/player-10.png';
-
 import React, { useState, useEffect } from'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import io from 'socket.io-client';
 import axios from 'axios';
 
 import { PlayerCard, Options } from '../../components'
 import { getAnswers, allNotReady } from '../../actions'
+import { API_ADDRESS } from '../../actions/globalVars';
 
+import { getIcon } from '../../actions/getIcon';
 
-import { playerReady } from '../../actions'
+import { useTheme } from '../../customHooks'
+
+import planet1 from '../../images/planet-1.png'
+import planet2 from '../../images/planet-2.png'
+import planet3 from '../../images/planet-3.png'
 
 
 const GameRoom = () => {
@@ -27,13 +21,21 @@ const GameRoom = () => {
   const history = useHistory()
   const dispatch = useDispatch()
 
+  const [blueTheme, setBlueTheme] = useState('position1');
+  const [purpleTheme, setPurpleTheme] = useState('position3');
+  const [pinkTheme, setPinkTheme] = useState('position2');
+
+  const [planetSelectTheme, setPlanetSelectTheme] = useState('planet-select-blue');
+
+  const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
+
   const currentPlayers = useSelector(state => state.myReducer.players)
   const socket = useSelector(state => state.myReducer.socket)
   const questions = useSelector(state => state.myReducer.questions)
   const answers = useSelector(state => state.myReducer.answers)
 
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [theme, setTheme] = useState("theme-planet-1");
+  const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         dispatch(getAnswers(id))
@@ -44,58 +46,68 @@ const GameRoom = () => {
         if (currentQuestion < questions.length-1) {
           dispatch(allNotReady())
           setCurrentQuestion(q => q + 1)
+          setDisabled(false);
         } else {
-          setTimeout(axios({
+          const thisPlayer = currentPlayers.find(p => p.player.id === socket.socket.id)
+          axios({
             method: 'post',
-            url: `http://localhost:3000/games/${id}/players/${socket.socket.id}/answers`,
-            data: answers
-          }), Math.random * 3000);
-          setTimeout(() => history.push(`/results/${id}`),3000)
+            url: `${API_ADDRESS}/games/${id}/players/${socket.socket.id}/answers`,
+            data: { answers, icon: thisPlayer.player.icon, username: thisPlayer.player.username }
+          });
+          setTimeout(() => history.push(`/results/${id}`), 3000)
         }
       }
     },[currentPlayers])
 
+    const setTheme = useTheme(currentQuestion);
+
     useEffect(() => {
       let question = currentQuestion;
       if (question % 3 === 2) {
-        setTheme("theme-planet-3");
+        console.log('Test 3')
+        setBlueTheme("position3");
+        setPurpleTheme("position1");
+        setPinkTheme("position2");
+        setPlanetSelectTheme("planet-select planet-select-purple");
       } else if (question % 3 === 1) {
-        setTheme("theme-planet-2");
+        console.log('Test 2')
+        setBlueTheme("position2");
+        setPurpleTheme("position3");
+        setPinkTheme("position1");
+        setPlanetSelectTheme("planet-select planet-select-pink");
       } else {
-        setTheme("theme-planet-1");
+        console.log('Test 1')
+        setBlueTheme("position1");
+        setPurpleTheme("position2");
+        setPinkTheme("position3");
+        setPlanetSelectTheme("planet-select planet-select-blue");
       }
     },[currentQuestion])
-
-    const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9, icon10];
-
-    const returnIcon = () => {
-      let icon = icons[Math.floor(Math.random() * icons.length)];
-      return icon;
-    }
   
-    const readyMarker = false;
-  
-    const returnPlayer = currentPlayers.map((player, index) => {
-        return <PlayerCard key={index} player={player.player} me={player.player === socket.socket.id} icon={returnIcon()} ready={player.ready} />
+    const returnPlayer = currentPlayers.map((p, i) => {
+        return <PlayerCard key={i} player={p.player.id} username={p.player.username} me={p.player.id === socket.socket.id} icon={getIcon(p.player.icon)} ready={p.ready} />
     });
   
 
     return (
-      <section style={{ color: "white" }} id="game-room" className={theme}>
+      <section style={{ color: "white" }} id="game-room" className={setTheme}>
         <div class="container">
           <div id="App">Room: {id}</div>
           <div className="planets">
-            
+            <span className={planetSelectTheme}></span>
+            <img className={blueTheme} src={planet1} alt="Planet 1" />
+            <img className={pinkTheme} src={planet2} alt="Planet 2" />
+            <img className={purpleTheme} src={planet3} alt="Planet 3" />
           </div>
           { questions ?
-            <>
+            <div>
               <div className="text-center">
                 <h3>QUESTION {currentQuestion+1}</h3>
-                <h1>{questions[currentQuestion].question}</h1>
+                <h1>{renderHTML(questions[currentQuestion].question)}</h1>
               </div>
-              <Options options={questions[currentQuestion].possible_answers}/>
+              <Options options={questions[currentQuestion].possible_answers} disabled={disabled} setDisabled={setDisabled}/>
               {returnPlayer}
-            </>
+            </div>
           :
             null }
         </div>

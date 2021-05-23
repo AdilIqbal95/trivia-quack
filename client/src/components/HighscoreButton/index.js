@@ -1,16 +1,16 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-const JoinGame = () => {
+const HighscoreButton = () => {
 
         const history = useHistory(); 
         
         function handleClick(e) {
             e.preventDefault()
-            history.push("/join");
+            history.push("/highscore");
         }
 
-    return <a href="/" onClick={handleClick} className="join-game-button">Join Game</a>
+    return <a href="/" onClick={handleClick} className="highscore-button">View Highscores</a>
 }
 
-export default JoinGame;
+export default HighscoreButton;

@@ -1,3 +1,84 @@
 #results {
+  margin-top: 25px;
   color: white;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 25px;
+  padding-bottom: 50px;
+
+  a {
+    width: 50px;
+    color: white;
+    padding: 10px;
+  }
+
+  h1 {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    .answer-player-list {
+      list-style-type: circle;
+      margin-left: 20px;
+    }
+  }
+}
+
+.switch-buttons {
+  text-align: center;
+  color: white;
+
+  .switch-left {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    background: rgb(15,27,108);
+    background: linear-gradient(0deg, rgba(15,27,108,1) 0%, rgba(6,142,252,1) 100%);
+  }
+
+  .switch-right {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    background: rgb(203,0,105);
+    background: linear-gradient(0deg, rgba(203,0,105,1) 0%, rgba(255,60,90,1) 100%);
+  }
+}
+
+.answer-holder {
+  margin-top: 25px;
+  overflow: auto;
+  height: 90vh;
+}
+
+.answer-box {
+
+  background: rgba(0,0,0,0.5);
+  border-radius: 25px;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  .answer-question {
+    font-size: 1.5rem;
+  }
+
+  .answer-wrong {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 25px;
+    border: 2px red solid;
+  }
+
+  .answer-correct {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 25px;
+    border: 2px green solid;
+  }
 }

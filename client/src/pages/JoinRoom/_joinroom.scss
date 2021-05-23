@@ -1,0 +1,55 @@
+#lobby {
+  h3 {
+    text-align: center;
+    color: white;
+  }
+}
+
+#join-game-section {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    width: 47vw;
+    height: 300px;
+    border-radius: 50px;
+    position: absolute;
+    margin-top: 150px;
+    margin-left: 27vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#duck {
+  width: 25%;
+  position: absolute;
+  left: -7.5%;
+  bottom: -7.5%;
+  animation: float 6s ease-in-out 2s infinite;
+
+  @media (max-width: 768px) {
+    display: block;
+    text-align: center;
+    width: 75%;
+    left: 12.5%;
+    right: auto;
+    bottom: -200px;
+    z-index: -1;
+  }
+}
+
+.ready-button:hover {
+  color: white;
+}
+
+@keyframes float {
+  0% {
+    transform: translatey(0px)
+  }
+  50% {
+    transform: translatey(-20px)
+  }
+  100% {
+    transform: translatey(0px)
+  }
+}
